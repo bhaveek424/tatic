@@ -29,13 +29,14 @@ model Song {
   artistId  Int
   playlists Playlist[]
   duration  Int
+  url       String
 }
 
 model Artist {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Song      Song[]
+  songs     Song[]
   name      String   @unique
 }
 
