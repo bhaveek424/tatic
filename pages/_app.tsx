@@ -1,43 +1,47 @@
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
-import 'reset-css';
+import "reset-css";
 import PlayerLayout from "../components/playerLayout";
 
 const theme = extendTheme({
   colors: {
     gray: {
-      100: '#F5f5f5',
-      200: '#EEEEEE',
-      300: '#e0e0e0',
-      400: '#BDBDBD',
-      500: '#9E9E9E',
-      600: '#757575',
-      700: '#616161',
-      800: '#424242',
-      900: '#212121',
+      100: "#F5f5f5",
+      200: "#EEEEEE",
+      300: "#e0e0e0",
+      400: "#BDBDBD",
+      500: "#9E9E9E",
+      600: "#757575",
+      700: "#616161",
+      800: "#424242",
+      900: "#212121",
     },
   },
   components: {
     Button: {
       variants: {
         link: {
-          ':focus': {
+          ":focus": {
             outline: "none",
             boxShadow: "none",
-          }
-        }
-      }
-    }
-  }
+          },
+        },
+      },
+    },
+  },
 });
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ChakraProvider>
-      <PlayerLayout>
+    <ChakraProvider theme={theme}>
+      {Component.authPage ? (
         <Component {...pageProps} />
-      </PlayerLayout>
+      ) : (
+        <PlayerLayout>
+          <Component {...pageProps} />
+        </PlayerLayout>
+      )}
     </ChakraProvider>
-  )
+  );
 }
 
-export default MyApp
+export default MyApp;
