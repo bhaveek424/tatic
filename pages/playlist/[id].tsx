@@ -7,18 +7,20 @@ const getBGColor = (id) => {
   const colors = [
     "red",
     "green",
-    "pruple",
+    "blue",
     "orange",
-    "teal",
+    "purple",
     "gray",
+    "teal",
     "yellow",
-    "brown",
   ];
 
   return colors[id - 1] || colors[Math.floor(Math.random() * colors.length)];
 };
+
 const Playlist = ({ playlist }) => {
   const color = getBGColor(playlist.id);
+
   return (
     <GradientLayout
       color={color}
@@ -28,7 +30,7 @@ const Playlist = ({ playlist }) => {
       description={`${playlist.songs.length} songs`}
       image={`https://picsum.photos/400?random=${playlist.id}`}
     >
-      <SongTable />
+      <SongTable songs={playlist.songs} />
     </GradientLayout>
   );
 };
