@@ -31,6 +31,8 @@ const run = async () => {
     create: {
       email: "user@test.com",
       password: bcrypt.hashSync("password", salt),
+      firstName: "Bhaveek",
+      lastName: "Jain",
     },
   });
 
@@ -39,7 +41,7 @@ const run = async () => {
     new Array(10).fill(1).map(async (_, i) => {
       return prisma.playlist.create({
         data: {
-          name: `Playlis #${i + 1}`,
+          name: `Playlist #${i + 1}`,
           user: {
             connect: { id: user.id },
           },

@@ -7,6 +7,7 @@ export const validateRoute = (handler) => {
     const token = req.cookies.TATIC_ACCESS_TOKEN;
 
     if (token) {
+      console.log("doit", token);
       let user;
 
       try {
@@ -28,4 +29,9 @@ export const validateRoute = (handler) => {
     res.status(401);
     res.json({ error: "Not Authorized" });
   };
+};
+
+export const validateToken = (token) => {
+  const user = jwt.verify(token, "hello");
+  return user;
 };
