@@ -37,7 +37,7 @@ const Player = ({ songs, activeSong }) => {
 
   const onShuffle = () => {
     // if you need the current state to set the next version of the state, always do it in a  callback
-    setShuffle((state) => !shuffle);
+    setShuffle((state) => !state);
   };
   const onRepeat = () => {
     setRepeat((state) => !state);
