@@ -30,6 +30,8 @@ const Player = ({ songs, activeSong }) => {
   const [repeat, setRepeat] = useState(false);
   const [shuffle, setShuffle] = useState(false);
   const [duration, setDuration] = useState(0.0);
+  // to sync up the UI we have in the player(seeking, playing/pausing and duration) we can attach a reference to React-Howler
+  const soundRef = useRef(null);
 
   const setPlayState = (value) => {
     setPlaying(value);
@@ -43,10 +45,57 @@ const Player = ({ songs, activeSong }) => {
     setRepeat((state) => !state);
   };
 
+  const prevSong = () => {
+    setIndex((state) => {
+      return state ? state - 1 : songs.length - 1;
+    });
+  };
+  const nextSong = () => {
+    setIndex((state) => {
+      if (shuffle) {
+        // gonna use recursion
+        const next = Math.floor(Math.random() * songs.length);
+
+        if (next === state) {
+          return nextSong();
+        }
+        return next;
+      } else {
+        return state === songs.length - 1 ? 0 : state + 1;
+      }
+    });
+  };
+
+  const onEnd = () => {
+    if (repeat) {
+      setSeek(0);
+      soundRef.current.seek(0);
+    } else {
+      nextSong();
+    }
+  };
+
+  const onLoad = () => {
+    const songDuration = soundRef.current.duration();
+    setDuration(songDuration);
+  };
+
+  const onSeek = (e) => {
+    // thats gonna update the visual UI seeking
+    setSeek(parseFloat(e[0]));
+    // now we have to also update song to seek it as well
+    soundRef.current.seek(e[0]);
+  };
+
   return (
     <Box>
       <Box>
-        <ReactHowler playing={playing} src={activeSong?.url} />
+        <ReactHowler
+          playing={playing}
+          src={activeSong?.url}
+          ref={soundRef}
+          onLoad={onLoad}
+        />
       </Box>
       <Center color="gray.600">
         <ButtonGroup>
