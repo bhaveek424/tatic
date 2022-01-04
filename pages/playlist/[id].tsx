@@ -36,11 +36,24 @@ const Playlist = ({ playlist }) => {
 };
 
 export const getServerSideProps = async ({ query, req }) => {
+  let user;
+
+  try {
+    user = validateToken(req.cookies.TATIC_ACCESS_TOKEN);
+  } catch (e) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/signin",
+      },
+    };
+  }
+
   const { id } = validateToken(req.cookies.TATIC_ACCESS_TOKEN);
   const [playlist] = await prisma.playlist.findMany({
     where: {
       id: +query.id,
-      userId: id,
+      userId: user.id,
     },
     include: {
       songs: {
