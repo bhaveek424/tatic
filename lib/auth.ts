@@ -7,7 +7,6 @@ export const validateRoute = (handler) => {
     const token = req.cookies.TATIC_ACCESS_TOKEN;
 
     if (token) {
-      console.log("doit", token);
       let user;
 
       try {
