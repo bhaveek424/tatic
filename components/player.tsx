@@ -22,11 +22,13 @@ import {
   MdOutlineRepeat,
 } from "react-icons/md";
 import { useStoreActions } from "easy-peasy";
+import { formatTime } from "../lib/formatters";
 
 const Player = ({ songs, activeSong }) => {
   const [playing, setPlaying] = useState(true);
   const [index, setIndex] = useState(0);
   const [seek, setSeek] = useState(0.0);
+  const [isSeeking, setIsSeeking] = useState(false);
   const [repeat, setRepeat] = useState(false);
   const [shuffle, setShuffle] = useState(false);
   const [duration, setDuration] = useState(0.0);
@@ -87,6 +89,23 @@ const Player = ({ songs, activeSong }) => {
     soundRef.current.seek(e[0]);
   };
 
+  useEffect(() => {
+    let timerId;
+
+    if (playing && !isSeeking) {
+      // if the music is currently playing and the user is not currently seeking:
+      const f = () => {
+        setSeek(soundRef.current.seek());
+        timerId = requestAnimationFrame(f);
+      };
+
+      timerId = requestAnimationFrame(f);
+      return () => cancelAnimationFrame(timerId);
+    }
+
+    cancelAnimationFrame(timerId);
+  }, [playing, isSeeking]);
+
   return (
     <Box>
       <Box>
@@ -95,6 +114,7 @@ const Player = ({ songs, activeSong }) => {
           src={activeSong?.url}
           ref={soundRef}
           onLoad={onLoad}
+          onEnd={onEnd}
         />
       </Box>
       <Center color="gray.600">
@@ -114,6 +134,7 @@ const Player = ({ songs, activeSong }) => {
             aria-label="skip"
             fontSize="24px"
             icon={<MdSkipPrevious />}
+            onClick={prevSong}
           />
           {playing ? (
             <IconButton
@@ -143,6 +164,7 @@ const Player = ({ songs, activeSong }) => {
             aria-label="skip"
             fontSize="24px"
             icon={<MdSkipNext />}
+            onClick={nextSong}
           />
           <IconButton
             outline="none"
@@ -159,15 +181,19 @@ const Player = ({ songs, activeSong }) => {
       <Box color="gray.600">
         <Flex justify="center" align="center">
           <Box width="10%">
-            <Text fontSize="x-small">1:21</Text>
+            <Text fontSize="x-small">{formatTime(seek)}</Text>
           </Box>
           <Box width="80%">
             <RangeSlider
               aria-label={["min", "max"]}
               step={0.1}
               min={0}
-              max={321}
               id="player-range"
+              max={duration ? duration.toFixed(2) : 0}
+              onChange={onSeek}
+              value={[seek]}
+              onChangeStart={() => setIsSeeking(true)}
+              onChangeInt={() => setIsSeeking(false)}
             >
               <RangeSliderTrack bg="gray.800">
                 <RangeSliderFilledTrack bg="gray.600" />
@@ -176,7 +202,7 @@ const Player = ({ songs, activeSong }) => {
             </RangeSlider>
           </Box>
           <Box width="10%" textAlign="right">
-            <Text fontSize="x-small">3:21</Text>
+            <Text fontSize="x-small">{formatTime(duration)}</Text>
           </Box>
         </Flex>
       </Box>
