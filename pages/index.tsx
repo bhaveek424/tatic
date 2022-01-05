@@ -51,7 +51,6 @@ const Home = ({ artists }) => {
 
 export const getServerSideProps = async () => {
   const artists = await prisma.artist.findMany({});
-  console.log(artists);
 
   return {
     props: { artists },
