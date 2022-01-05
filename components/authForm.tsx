@@ -77,7 +77,7 @@ const AuthForm: FC<{ mode: "signin" | "signup" }> = ({ mode }) => {
               lineHeight={1.1}
               fontSize={{ base: "2xl", sm: "3xl", md: "4xl" }}
             >
-              Log in to Tatic
+              Log in to Trax
               <Text
                 as={"span"}
                 bgGradient="linear(to-r, #6C9E7D, #6C9E7D)"
